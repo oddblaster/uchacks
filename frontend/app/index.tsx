@@ -12,6 +12,7 @@ export default function HomeScreen() {
   const navigation = useNavigation();
 
   const handlePress = async () => {
+    let finalData = null;
     try {
       const response = await fetch('https://search-party-backend-flax.vercel.app/api/create-user', {
         method: 'POST',
@@ -28,8 +29,7 @@ export default function HomeScreen() {
       }
 
       const data = await response.json();
-
-      Alert.alert('User created', `Your user ID is: ${data[0].id}`);
+      finalData = data[0].id;
       
       // Navigate to the next screen if needed
       // navigation.navigate('NextScreen');
@@ -39,9 +39,9 @@ export default function HomeScreen() {
       //@ts-ignore
       Alert.alert('Failed to create user', error.message);
     }
-    
+    Alert.alert('User created', `Your user ID is: ${finalData}`);
     //@ts-ignore
-    navigation.navigate('uploadscreen');
+    navigation.navigate('uploadscreen', { userId: finalData });
   };
 
   const handleInputChange = (text: string) => {

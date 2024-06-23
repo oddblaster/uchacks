@@ -1,45 +1,27 @@
-import React, { useState } from 'react';
-import { TouchableOpacity, View, StyleSheet, Image, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { TouchableOpacity, View, StyleSheet, Image, Alert, Button } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
-import { audioRecorder } from 'react-native-audio-recorder';
+import { useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
+import * as Audio from 'expo-av';
+import * as FileSystem from 'expo-file-system';
+import Voice from '@react-native-voice/voice';
+import * as Permissions from 'expo-permissions';
 
-const imageUrl = 'https://i.imgur.com/w9L9ZkH.png';
-
-export default function HelloWorldScreen() {
-  const [isRecording, setIsRecording] = useState(false);
-
-  const handleImagePress = async () => {
-    if (!isRecording) {
-      try {
-        console.log(audioRecorder)
-        const filePath = 'path/to/save/test.aac'; // Replace with your desired file path
-        await audioRecorder.startRecording(filePath);
-        setIsRecording(true);
-        console.log('Recording started.');
-      } catch (error) {
-        console.error('Failed to start recording.', error);
-      }
-    } else {
-      try {
-        const filePath = await audioRecorder.stopRecording();
-        setIsRecording(false);
-        console.log('Recording stopped. File saved at: ' + filePath);
-        // Add logic to handle the recorded audio file, e.g., play, upload, etc.
-      } catch (error) {
-        console.error('Failed to stop recording.', error);
-      }
-    }
-  };
+const HelloWorldScreen = () => {
+  const route = useRoute();
+  const imageURL = route.params?.imageURL;
+  const navigation = useNavigation();
 
   return (
     <View style={styles.container}>
-      <ThemedText type="subtitle">Show Map Here and Audio Button</ThemedText>
-      <TouchableOpacity onPress={handleImagePress}>
-        <Image source={{ uri: imageUrl }} style={styles.localImage} />
+      <Image source={{ uri: imageURL }} style={styles.localImage} />
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('recordingscreen')}>
+        <ThemedText type="subtitle">Next</ThemedText>
       </TouchableOpacity>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -49,10 +31,24 @@ const styles = StyleSheet.create({
     backgroundColor: '#000000',
   },
   localImage: {
-    width: 100,
-    height: 100,
+    width: 300,
+    height: 300,
     borderRadius: 10,
-    marginTop: 300,
-    marginBottom: 20, // Adjust this value for spacing
+    marginBottom: 20,
+  },
+  button: {
+    backgroundColor: '#1E90FF',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
+    marginBottom: 20,
+  },
+  recognizedText: {
+    marginTop: 20,
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
   },
 });
+
+export default HelloWorldScreen;

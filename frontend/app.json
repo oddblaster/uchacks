@@ -19,7 +19,12 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "RECORD_AUDIO",
+        "CAMERA_ROLL"
+      ],
+      "package": "android.frontend"
     },
     "web": {
       "bundler": "metro",
