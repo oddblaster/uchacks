@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 const UploadScreen = () => {
   const route = useRoute();
   const userId = route.params?.userId;
+  const name = route.params?.name;
   const [file, setFile] = useState(null);
   const navigation = useNavigation();
 
@@ -46,7 +47,7 @@ const UploadScreen = () => {
       console.error(error);
     }
 
-    navigation.navigate('mainscreen', {imageURL : image});
+    navigation.navigate('mainscreen', {imageURL : image, userId: userId, name: name});
     
   };
 

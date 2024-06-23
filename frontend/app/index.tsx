@@ -1,6 +1,6 @@
 import React, { useState, useContext, ReactNode} from 'react';
 import { Image, StyleSheet, Platform, Button, View, Alert, TextInput} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useRoute, useNavigation } from '@react-navigation/native';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -10,6 +10,8 @@ import { ThemedView } from '@/components/ThemedView';
 export default function HomeScreen() {
   const [name, setName] = useState('');
   const navigation = useNavigation();
+  const route = useRoute();
+  const userId = route.params?.userId;
 
   const handlePress = async () => {
     let finalData = null;
@@ -41,7 +43,7 @@ export default function HomeScreen() {
     }
     Alert.alert('User created', `Your user ID is: ${finalData}`);
     //@ts-ignore
-    navigation.navigate('uploadscreen', { userId: finalData });
+    navigation.navigate('uploadscreen', { userId: finalData, name : name});
   };
 
   const handleInputChange = (text: string) => {
