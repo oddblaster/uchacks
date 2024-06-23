@@ -26,7 +26,7 @@ const HelloWorldScreen = () => {
   const transcribeApiURL = 'https://search-party-backend-flax.vercel.app/api/transcribe'
 
   const Buttonpress = async () => {
-    navigation.navigate('roomchat');
+    navigation.navigate('dog', { userId: userId, name: userName });
   }
 
   const playAudio = async (audioUrl) => {
