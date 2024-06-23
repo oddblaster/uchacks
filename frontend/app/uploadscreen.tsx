@@ -47,6 +47,7 @@ const UploadScreen = () => {
       console.error(error);
     }
 
+    //@ts-ignore
     navigation.navigate('mainscreen', {imageURL : image, userId: userId, name: name});
     
   };

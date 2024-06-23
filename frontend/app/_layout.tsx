@@ -16,6 +16,14 @@ export default function RootLayout() {
         }} 
       />
       <Stack.Screen 
+        name="roomchat" 
+        options={{ 
+          title: 'Chat Room', 
+          headerStyle: { backgroundColor: '#151718' }, // Change the background color
+          headerTintColor: '#fff', // Change the text color
+        }} 
+      />
+      <Stack.Screen 
         name="mainscreen" 
         options={{ 
           headerShown: false

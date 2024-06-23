@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { TouchableOpacity, View, StyleSheet, Image, Alert, Button, Text, ScrollView} from 'react-native';
+import { TouchableOpacity, View, StyleSheet, Image, Alert, Button, Text, ScrollView, Platform} from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { Audio } from 'expo-av';
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
+import * as FileSystem from 'expo-file-system';
 
 const HelloWorldScreen = () => {
   const route = useRoute();
@@ -22,6 +23,11 @@ const HelloWorldScreen = () => {
   const [curId, setCurId] = useState(0);
   const [curAudio, setCurAudio] = useState('');
   const apiUrl = 'https://search-party-backend-flax.vercel.app/api/get-bulletins';
+  const transcribeApiURL = 'https://search-party-backend-flax.vercel.app/api/transcribe'
+
+  const Buttonpress = async () => {
+    navigation.navigate('roomchat');
+  }
 
   const playAudio = async (audioUrl) => {
     if (audioUrl) {
@@ -69,51 +75,13 @@ const HelloWorldScreen = () => {
   // Start polling on component mount
   useEffect(() => {
     fetchData();
-    const intervalId = setInterval(fetchData, 10000);
+    const intervalId = setInterval(fetchData, 10000000);
 
     return () => {
       clearInterval(intervalId);
     };
   }, []);
 
-  async function startRecording() {
-    try {
-      const perm = await Audio.requestPermissionsAsync();
-      if (perm.status === "granted") {
-        await Audio.setAudioModeAsync({
-          allowsRecordingIOS: true,
-          playsInSilentModeIOS: true
-        });
-        const { recording } = await Audio.Recording.createAsync(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY);
-        setRecording(recording);
-      }
-    } catch (err) {
-      console.error('Failed to start recording', err);
-    }
-  }
-
-  async function stopRecording() {
-    setRecording(undefined);
-
-    await recording.stopAndUnloadAsync();
-    const { sound, status } = await recording.createNewLoadedSoundAsync();
-    setRecordings(prevRecordings => [
-      ...prevRecordings,
-      {
-        sound: sound,
-        duration: getDurationFormatted(status.durationMillis),
-        file: recording.getURI()
-      }
-    ]);
-
-    sound.replayAsync();  // Play the recording immediately after stopping
-  }
-
-  function getDurationFormatted(milliseconds) {
-    const minutes = Math.floor(milliseconds / 1000 / 60);
-    const seconds = Math.round((milliseconds / 1000) % 60);
-    return seconds < 10 ? `${minutes}:0${seconds}` : `${minutes}:${seconds}`;
-  }
 
   //TODO: delete this if it becomes obsolete
   const handleMoveQuadrantPress = async () => {
@@ -134,12 +102,6 @@ const HelloWorldScreen = () => {
   return (
     <View style={styles.container}>
       <Image source={{ uri: imageURL }} style={styles.localImage} />
-      <TouchableOpacity
-        onPressIn={startRecording}
-        onPressOut={stopRecording}
-      >
-        <Image source={{ uri: "https://i.imgur.com/w9L9ZkH.png" }} style={styles.button} />
-      </TouchableOpacity>
 
       <Picker
           selectedValue={selectedOption}
@@ -157,6 +119,12 @@ const HelloWorldScreen = () => {
         >
           <ThemedText type="button">Move Quadrant</ThemedText>
         </TouchableOpacity>
+        <TouchableOpacity
+        style={styles.moveButton}
+        onPress={Buttonpress} // Corrected
+      >
+        <ThemedText type="button">Chatroom</ThemedText>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -192,7 +160,7 @@ const styles = StyleSheet.create({
   picker: {
     width: 250,
     height: 200,
-    color: '#ffffff',
+    color: '#000000',
     backgroundColor: '#ffffff',
     marginTop: 20,
   },
